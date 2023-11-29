@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import useSWR from "swr";
 import { fetcher } from "../../api/api";
-import Input from "./Input";
+import Input from "./TableInput";
 import { ExchangeRateItem } from "../../pages/Converter";
 
 interface ExchangeRateTableProps {
@@ -97,8 +97,12 @@ const ExchangeRateTable: React.FC<ExchangeRateTableProps> = ({
                 <Input
                   value={rate?.sale.slice(0, 5)}
                   name="sale"
-                  onChange={(e) => handleInputChange(e, rate?.ccy)}
-                  onFocus={(e) => handleInputFocus(e, rate?.ccy)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleInputChange(e, rate?.ccy)
+                  }
+                  onFocus={(e: React.FocusEvent<HTMLInputElement, Element>) =>
+                    handleInputFocus(e, rate?.ccy)
+                  }
                   onBlur={(
                     e: React.ChangeEvent<HTMLInputElement>,
                     isCorrectValue: boolean

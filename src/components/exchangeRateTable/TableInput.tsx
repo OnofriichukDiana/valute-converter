@@ -16,7 +16,7 @@ export interface InputProps {
   initial: any;
 }
 
-const Input: React.FC<InputProps> = ({
+const TableInput: React.FC<InputProps> = ({
   name,
   value,
   onChange,
@@ -64,4 +64,4 @@ const Input: React.FC<InputProps> = ({
   );
 };
 
-export default Input;
+export default TableInput;
