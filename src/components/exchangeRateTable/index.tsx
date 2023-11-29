@@ -1,17 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import useSWR from "swr";
 import { fetcher } from "../../api/api";
-import Input from "./input";
+import Input from "./Input";
+import { ExchangeRateItem } from "../../pages/Converter";
 
 interface ExchangeRateTableProps {
-  data: any[];
-  onChange: any;
+  data: ExchangeRateItem[];
+  onChange: (newData: ExchangeRateItem[]) => void;
 }
 
 const ExchangeRateTable: React.FC<ExchangeRateTableProps> = ({
   data,
   onChange,
 }) => {
+  const [recentValue, setRecentValue] = useState("");
   const { data: initialData } = useSWR(
     process.env.REACT_APP_BACKEND_URL || "",
     fetcher
@@ -19,10 +21,10 @@ const ExchangeRateTable: React.FC<ExchangeRateTableProps> = ({
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    index: number
+    ccy: string
   ) => {
-    const newArray = data.map((item, i) => {
-      if (i === index) {
+    const newArray = data.map((item) => {
+      if (ccy === item.ccy) {
         return { ...item, [e.currentTarget.name]: e.target.value };
       } else return item;
     });
@@ -31,11 +33,12 @@ const ExchangeRateTable: React.FC<ExchangeRateTableProps> = ({
 
   const handleInputFocus = (
     e: React.ChangeEvent<HTMLInputElement>,
-    index: number
+    ccy: string
   ) => {
-    const newArray = data.map((item, i) => {
-      if (i === index) {
-        return { ...item, [e.currentTarget.name]: "  " };
+    setRecentValue(e.target.value);
+    const newArray = data.map((item) => {
+      if (ccy === item.ccy) {
+        return { ...item, [e.currentTarget.name]: "" };
       } else return item;
     });
     onChange(newArray);
@@ -43,16 +46,15 @@ const ExchangeRateTable: React.FC<ExchangeRateTableProps> = ({
 
   const handleInputBlur = (
     e: React.ChangeEvent<HTMLInputElement>,
-    index: number
+    ccy: string,
+    isCorrectValue: boolean
   ) => {
-    if (!e.target.value) {
-      const newArray = data.map((item, i) => {
-        if (i === index) {
+    if (!e.target.value || !isCorrectValue) {
+      const newArray = data.map((item) => {
+        if (ccy === item.ccy) {
           return {
             ...item,
-            [e.currentTarget.name]: initialData?.exchangeRate?.find(
-              (initialItem: any) => initialItem.ccy === item.ccy
-            )?.[e.currentTarget.name],
+            [e.currentTarget.name]: recentValue,
           };
         } else return item;
       });
@@ -64,34 +66,46 @@ const ExchangeRateTable: React.FC<ExchangeRateTableProps> = ({
     <table className="min-w-full bg-white border border-gray-300">
       <thead>
         <tr>
-          <th className="border border-gray-300 p-2">Currency</th>
-          <th className="border border-gray-300 p-2">Buy Rate</th>
-          <th className="border border-gray-300 p-2">Sale Rate</th>
+          <th className="border border-gray-300 p-3">Currency</th>
+          <th className="border border-gray-300 p-3">Buy Rate</th>
+          <th className="border border-gray-300 p-3">Sale Rate</th>
         </tr>
       </thead>
       <tbody>
         {!!data &&
-          data?.map((rate, index) => (
+          data?.map((rate) => (
             <tr key={rate?.ccy} className="hover:bg-gray-50">
-              <td className="border border-gray-300 p-2">
+              <td className="border border-gray-300 p-3">
                 {rate?.ccy}/ {rate?.base_ccy}
               </td>
-              <td className="border border-gray-300 p-2">
+              <td className="border border-gray-300 p-3">
                 <Input
-                  value={rate?.buy}
+                  value={rate?.buy?.slice(0, 5)}
                   name="buy"
-                  onChange={(e) => handleInputChange(e, index)}
-                  onFocus={(e) => handleInputFocus(e, index)}
-                  onBlur={(e) => handleInputBlur(e, index)}
+                  onChange={(e) => handleInputChange(e, rate?.ccy)}
+                  onFocus={(e) => handleInputFocus(e, rate?.ccy)}
+                  onBlur={(
+                    e: React.ChangeEvent<HTMLInputElement>,
+                    isCorrectValue: boolean
+                  ) => handleInputBlur(e, rate?.ccy, isCorrectValue)}
+                  initial={initialData.exchangeRate?.find(
+                    (init: ExchangeRateItem) => init.ccy === rate.ccy
+                  )}
                 />
               </td>
-              <td className="border border-gray-300 p-2">
+              <td className="border border-gray-300 p-3">
                 <Input
-                  value={rate?.sale}
+                  value={rate?.sale.slice(0, 5)}
                   name="sale"
-                  onChange={(e) => handleInputChange(e, index)}
-                  onFocus={(e) => handleInputFocus(e, index)}
-                  onBlur={(e) => handleInputBlur(e, index)}
+                  onChange={(e) => handleInputChange(e, rate?.ccy)}
+                  onFocus={(e) => handleInputFocus(e, rate?.ccy)}
+                  onBlur={(
+                    e: React.ChangeEvent<HTMLInputElement>,
+                    isCorrectValue: boolean
+                  ) => handleInputBlur(e, rate?.ccy, isCorrectValue)}
+                  initial={initialData.exchangeRate?.find(
+                    (init: ExchangeRateItem) => init.ccy === rate.ccy
+                  )}
                 />
               </td>
             </tr>
