@@ -18,7 +18,7 @@ const Converter = () => {
 
   const { data, error, isLoading } = useSWR(
     process.env.REACT_APP_BACKEND_URL || "",
-    fetcher
+    fetcher,
   );
 
   useEffect(() => {

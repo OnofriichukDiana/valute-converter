@@ -16,12 +16,12 @@ const ExchangeRateTable: React.FC<ExchangeRateTableProps> = ({
   const [recentValue, setRecentValue] = useState("");
   const { data: initialData } = useSWR(
     process.env.REACT_APP_BACKEND_URL || "",
-    fetcher
+    fetcher,
   );
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    ccy: string
+    ccy: string,
   ) => {
     const newArray = data.map((item) => {
       if (ccy === item.ccy) {
@@ -33,7 +33,7 @@ const ExchangeRateTable: React.FC<ExchangeRateTableProps> = ({
 
   const handleInputFocus = (
     e: React.ChangeEvent<HTMLInputElement>,
-    ccy: string
+    ccy: string,
   ) => {
     setRecentValue(e.target.value);
     const newArray = data.map((item) => {
@@ -47,7 +47,7 @@ const ExchangeRateTable: React.FC<ExchangeRateTableProps> = ({
   const handleInputBlur = (
     e: React.ChangeEvent<HTMLInputElement>,
     ccy: string,
-    isCorrectValue: boolean
+    isCorrectValue: boolean,
   ) => {
     if (!e.target.value || !isCorrectValue) {
       const newArray = data.map((item) => {
@@ -86,10 +86,10 @@ const ExchangeRateTable: React.FC<ExchangeRateTableProps> = ({
                   onFocus={(e) => handleInputFocus(e, rate?.ccy)}
                   onBlur={(
                     e: React.ChangeEvent<HTMLInputElement>,
-                    isCorrectValue: boolean
+                    isCorrectValue: boolean,
                   ) => handleInputBlur(e, rate?.ccy, isCorrectValue)}
                   initial={initialData.exchangeRate?.find(
-                    (init: ExchangeRateItem) => init.ccy === rate.ccy
+                    (init: ExchangeRateItem) => init.ccy === rate.ccy,
                   )}
                 />
               </td>
@@ -105,10 +105,10 @@ const ExchangeRateTable: React.FC<ExchangeRateTableProps> = ({
                   }
                   onBlur={(
                     e: React.ChangeEvent<HTMLInputElement>,
-                    isCorrectValue: boolean
+                    isCorrectValue: boolean,
                   ) => handleInputBlur(e, rate?.ccy, isCorrectValue)}
                   initial={initialData.exchangeRate?.find(
-                    (init: ExchangeRateItem) => init.ccy === rate.ccy
+                    (init: ExchangeRateItem) => init.ccy === rate.ccy,
                   )}
                 />
               </td>
