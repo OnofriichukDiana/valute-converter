@@ -15,7 +15,7 @@ const ExchangeRateTable: React.FC<ExchangeRateTableProps> = ({
 }) => {
   const [recentValue, setRecentValue] = useState("");
   const { data: initialData } = useSWR(
-    process.env.REACT_APP_BACKEND_URL || "",
+    window.location.href.replace("3000", "3001") + "db",
     fetcher,
   );
 

@@ -17,7 +17,7 @@ const Converter = () => {
   const [exchangeRate, setExchangeRate] = useState<ExchangeRateItem[]>([]);
 
   const { data, error, isLoading } = useSWR(
-    process.env.REACT_APP_BACKEND_URL || "",
+    window.location.href.replace("3000", "3001") + "db",
     fetcher,
   );
 
